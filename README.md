@@ -6,8 +6,8 @@ Puissance 4 :
 
 Déroulement d’une partie puissance 4 :
 
-1- tirage aléatoire entre les deux joueurs pour savoir qui commence.
-2- le joueur tirée au sort va choisir une colonne avec les boutons droite, gauche et enfin validée.
+1- Joueur 1 qui commence.
+2- Il va ensuite choisir une colonne avec les boutons droite, gauche et enfin validée.
 3- la ligne en question devient de la couleur du joueur, jaune ou rouge.
 4- puis c’est à l’autre de jouer.
 5- entre chaque joueur vérification si 4 jetons de la même couleur alignés horizontalement, verticalement ou diagonalement.
