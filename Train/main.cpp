@@ -16,12 +16,9 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    //QWidget fenetre;
+
     QMaster master;
 
-
-
-       //QObject::connect(master.boutons[q-5], SIGNAL(clicked()),&master, SLOT(master.moveleftslot())); // PEUT ETRE L INIT DE MASTER //marche pas
 
 
 
