@@ -2,7 +2,7 @@ Puissance 4 :
 
 - 6 lignes / 7 colonnes.
 - 2 couleurs différentes : bleu et rouge.
-- 1 vs 1 / peut être 1 vs IA si on finit vite 
+- 1 vs 1 / peut être 1 vs IA si on finit vite (Avec l'algo min max)
 
 Déroulement d’une partie puissance 4 :
 
