@@ -64,6 +64,120 @@ QMaster::~QMaster() // Destructeur
 }
 
 
+bool QMaster::verif_verti(int val){
+    bool end_vert=false;
+    for(int columns=0; columns<7;columns++){
+        for(int lines=5;lines>=0;lines--){
+            if(lines>2){
+
+                if(gamestate[lines][columns]==2 && gamestate[lines-1][columns]==2 && gamestate[lines-2][columns]==2 && gamestate[lines-3][columns]==2){
+                    end_vert=true;
+
+                }
+
+            }
+
+
+    }
+
+}
+    return end_vert;
+}
+
+bool QMaster::verif_horiz(int val){
+    bool end_hor=false;
+    for(int lines=5;lines>=0;lines--){
+        for(int columns=0; columns<7;columns++){
+           if(columns<4){
+               if(gamestate[lines][columns]==2 && gamestate[lines][columns+1]==2 && gamestate[lines][columns+2]==2 && gamestate[lines][columns+3]==2){
+               end_hor=true;
+           }
+
+        }
+
+
+    }
+    }
+
+
+    return end_hor;
+
+
+}
+
+
+bool QMaster::verif_diag_g(int val){
+    bool end_diag_g=false;
+    for(int lines=2;lines>=0;lines--){
+        for(int columns=0; columns<4;columns++){
+            if(gamestate[lines][columns]==val && gamestate[lines+1][columns+1]==val && gamestate[lines+2][columns+2]==val && gamestate[lines+3][columns+3]==val){
+                end_diag_g=true;
+            }
+
+        }
+
+
+    }
+
+
+
+    return end_diag_g;
+
+}
+
+bool QMaster::verif_diag_d(int val){
+    bool end_diag_d=false;
+
+    for(int lines=5;lines>=3;lines--){
+         for(int columns=0; columns<4;columns++){
+              if(gamestate[lines][columns]==val && gamestate[lines-1][columns+1]==val && gamestate[lines-2][columns+2]==val && gamestate[lines-3][columns+3]==val){
+                  end_diag_d=true;
+              }
+
+         }
+
+
+    }
+
+
+
+    return end_diag_d;
+}
+
+
+
+
+
+bool QMaster::end_Game(bool joueur){
+    bool end=false;
+    int value;
+
+    if(joueur){
+
+        value=1;
+        if(verif_horiz(value) || verif_verti(value)|| verif_diag_d(value)|| verif_diag_g(value)){
+            end=true;
+
+
+    }
+
+    }
+
+    else {
+        value=2;
+        if(verif_horiz(value) || verif_verti(value)|| verif_diag_d(value)|| verif_diag_g(value)){
+            end=true;
+
+
+    }
+
+
+    }
+
+    return end;
+}
+
+
 void QMaster::moverightslot(){
 
           int newselect=(select+1)%7; // +1 car on se decalle d'un bouton vers la droite.
@@ -133,6 +247,9 @@ void  QMaster::playerswitch(){
 
                 bouton[i+1][select].setStyleSheet("background-color: red;");
                 gamestate[i][select]=1;
+                if(end_Game(player)){
+                    QApplication::quit(); // En cours... // Quitte le jeu quand on a un gagnant.
+                }
                 i=-1;
                 full=false;
 
@@ -140,6 +257,8 @@ void  QMaster::playerswitch(){
         }
 
        if(full){
+
+
 
        }
 
@@ -168,7 +287,10 @@ void  QMaster::playerswitch(){
              if(gamestate[i][select]==0){
 
                  bouton[i+1][select].setStyleSheet("background-color: blue;");
-                 gamestate[i][select]=1;
+                 gamestate[i][select]=2;
+                 if(end_Game(player)){
+                     QApplication::quit();
+                 }
 
                  i=-1;
                  full=false;
@@ -197,3 +319,9 @@ void  QMaster::playerswitch(){
     }
 
 }
+
+
+
+
+
+

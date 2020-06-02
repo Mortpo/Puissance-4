@@ -29,6 +29,15 @@ public:
     bool player; // Si true, alors Joueur 1 doit jouer, si false, Joueur 2 doit jouer.
     QGridLayout layout ; // Permet  de positionner nos Widgets.
 
+    bool verif_horiz(int val);
+    bool verif_verti(int val);
+    bool verif_diag_d(int val);
+    bool verif_diag_g(int val);
+    bool end_Game(bool joueur);
+
+
+
+
 
 public slots:
 
