@@ -70,7 +70,7 @@ bool QMaster::verif_verti(int val){
         for(int lines=5;lines>=0;lines--){
             if(lines>2){
 
-                if(gamestate[lines][columns]==2 && gamestate[lines-1][columns]==2 && gamestate[lines-2][columns]==2 && gamestate[lines-3][columns]==2){
+                if(gamestate[lines][columns]==val && gamestate[lines-1][columns]==val && gamestate[lines-2][columns]==val && gamestate[lines-3][columns]==val){
                     end_vert=true;
 
                 }
@@ -89,7 +89,7 @@ bool QMaster::verif_horiz(int val){
     for(int lines=5;lines>=0;lines--){
         for(int columns=0; columns<7;columns++){
            if(columns<4){
-               if(gamestate[lines][columns]==2 && gamestate[lines][columns+1]==2 && gamestate[lines][columns+2]==2 && gamestate[lines][columns+3]==2){
+               if(gamestate[lines][columns]==val && gamestate[lines][columns+1]==val && gamestate[lines][columns+2]==val && gamestate[lines][columns+3]==val){
                end_hor=true;
            }
 
