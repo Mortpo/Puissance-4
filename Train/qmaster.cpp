@@ -63,6 +63,11 @@ QMaster::~QMaster() // Destructeur
 
 }
 
+bool QMaster::getreplay(){
+
+    return replay;
+}
+
 
 bool QMaster::verif_verti(int val){
     bool end_vert=false;
@@ -248,7 +253,28 @@ void  QMaster::playerswitch(){
                 bouton[i+1][select].setStyleSheet("background-color: red;");
                 gamestate[i][select]=1;
                 if(end_Game(player)){
-                    QApplication::quit(); // En cours... // Quitte le jeu quand on a un gagnant.
+                    QMessageBox msgBox;
+                    msgBox.setText("Partie finie, le joueur rouge vous a exterminé... !");
+                    msgBox.setInformativeText("Voulez-vous rejouer ?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int ret=msgBox.exec();
+
+                    switch (ret) {
+
+                    case QMessageBox::Yes:
+
+                        // Changement de layout pour recommencer la partie.... // Ici :
+
+                        replay=true;
+                        break;
+                    case  QMessageBox::No:
+                        QApplication::quit();
+                        break;
+                    default:
+                        break;
+                }
+                           // QApplication::quit(); // En cours... // Quitte le jeu quand on a un gagnant.
                 }
                 i=-1;
                 full=false;
@@ -289,7 +315,29 @@ void  QMaster::playerswitch(){
                  bouton[i+1][select].setStyleSheet("background-color: blue;");
                  gamestate[i][select]=2;
                  if(end_Game(player)){
-                     QApplication::quit();
+                     QMessageBox msgBox;
+                     msgBox.setText("Partie finie, le joueur bleu vous a exterminé... !");
+                     msgBox.exec(); msgBox.setInformativeText("Voulez-vous rejouer ?");
+                     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                     msgBox.setDefaultButton(QMessageBox::Yes);
+                     int ret=msgBox.exec();
+
+                     switch (ret) {
+
+                     case QMessageBox::Yes:
+// Changement de layout pour recommencer la partie.... // Ici :
+
+
+
+                         replay=true;
+                         break;
+                     case  QMessageBox::No:
+                         QApplication::quit();
+                         break;
+                     default:
+                         break;
+                 }
+                     //QApplication::quit();
                  }
 
                  i=-1;
