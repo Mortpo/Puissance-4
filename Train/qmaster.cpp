@@ -2,11 +2,8 @@
 #include <iostream>
 
 
-QMaster::QMaster(){
 
-    select=3;
-    player=true; // bool qui permet de definir le tour des joueurs, true pour le joueur 1 et false pour le joueur 2.
-
+void init(QPushButton bouton[8][7], int gamestate[6][7] , QGridLayout &layout , int &select , bool &player){
     for (int x=0 ; x<6;x++){
         for (int y=0 ; y<7;y++){
             gamestate[x][y]=0; // on initialise notre plateau de jeu, c'est un tableau de 0 au quel sera associé des boutons.
@@ -19,6 +16,7 @@ QMaster::QMaster(){
         for(int h=0;h<7;h++){
 
              bouton[i][h].setText("\n\n        \n\n");
+             bouton[i][h].setStyleSheet("background-color: solid gray;");
 
              layout.addWidget(&bouton[i][h], i, h);
 
@@ -48,6 +46,14 @@ QMaster::QMaster(){
            bouton[0][select].setText("\n\nJoueur 2\n\n");
 
        }
+}
+
+QMaster::QMaster(){
+
+    select=3;
+    player=true; // bool qui permet de definir le tour des joueurs, true pour le joueur 1 et false pour le joueur 2.
+
+    init(bouton,gamestate , layout ,select , player);
 
 
        QObject::connect(&bouton[7][7-6], SIGNAL(clicked()),this, SLOT(moveleftslot())); // On connecte les boutons de direction aux slots que l'on instancie ici plus bas.
@@ -56,6 +62,7 @@ QMaster::QMaster(){
 
 
 }
+
 
 QMaster::~QMaster() // Destructeur
 {
@@ -254,7 +261,7 @@ void  QMaster::playerswitch(){
                 gamestate[i][select]=1;
                 if(end_Game(player)){
                     QMessageBox msgBox;
-                    msgBox.setText("Partie finie, le joueur rouge vous a exterminé... !");
+                    msgBox.setText("Partie finie, le joueur rouge a gagné... !");
                     msgBox.setInformativeText("Voulez-vous rejouer ?");
                     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
                     msgBox.setDefaultButton(QMessageBox::Yes);
@@ -265,6 +272,7 @@ void  QMaster::playerswitch(){
                     case QMessageBox::Yes:
 
                         // Changement de layout pour recommencer la partie.... // Ici :
+                           init(bouton,gamestate , layout ,select , player);
 
                         replay=true;
                         break;
@@ -316,8 +324,8 @@ void  QMaster::playerswitch(){
                  gamestate[i][select]=2;
                  if(end_Game(player)){
                      QMessageBox msgBox;
-                     msgBox.setText("Partie finie, le joueur bleu vous a exterminé... !");
-                     msgBox.exec(); msgBox.setInformativeText("Voulez-vous rejouer ?");
+                     msgBox.setText("Partie finie, le joueur bleu a gagné... !");
+                     msgBox.setInformativeText("Voulez-vous rejouer ?");
                      msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
                      msgBox.setDefaultButton(QMessageBox::Yes);
                      int ret=msgBox.exec();
@@ -326,7 +334,7 @@ void  QMaster::playerswitch(){
 
                      case QMessageBox::Yes:
 // Changement de layout pour recommencer la partie.... // Ici :
-
+                        init(bouton,gamestate , layout ,select , player);
 
 
                          replay=true;
