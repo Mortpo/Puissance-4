@@ -3,7 +3,7 @@
 
 
 
-void init(QPushButton bouton[8][7], int gamestate[6][7] , QGridLayout &layout , int &select , bool &player){
+void QMaster::restartgame(QPushButton bouton[8][7], int gamestate[6][7] , QGridLayout &layout , int &select , int playerturn){
     for (int x=0 ; x<6;x++){
         for (int y=0 ; y<7;y++){
             gamestate[x][y]=0; // on initialise notre plateau de jeu, c'est un tableau de 0 au quel sera associé des boutons.
@@ -15,50 +15,139 @@ void init(QPushButton bouton[8][7], int gamestate[6][7] , QGridLayout &layout , 
 
         for(int h=0;h<7;h++){
 
-             bouton[i][h].setText("\n\n        \n\n");
-             bouton[i][h].setStyleSheet("background-color: solid gray;");
+            bouton[i][h].setText("\n\n        \n\n");
+            bouton[i][h].setStyleSheet("background-color: solid gray;");
 
-             layout.addWidget(&bouton[i][h], i, h);
+            layout.addWidget(&bouton[i][h], i, h);
 
 
 
-             bouton[0][h].setStyleSheet("background-color: grey;");
-             bouton[7][h].setStyleSheet("background-color: grey;");
+            bouton[0][h].setStyleSheet("background-color: grey;");
+            bouton[7][h].setStyleSheet("background-color: grey;");
         }
 
 
     }
 
-       bouton[7][7-4].setText("\n\n PLACER \n\n");
-       bouton[7][7-2].setText("\n\n   >>   \n\n");
-       bouton[7][7-6].setText("\n\n   <<   \n\n");
+    bouton[7][7-4].setText("\n\n PLACER \n\n");
+    bouton[7][7-2].setText("\n\n   >>   \n\n");
+    bouton[7][7-6].setText("\n\n   <<   \n\n");
 
-       if(player){
+    bouton[0][select].setStyleSheet("background-color:" + player[playerturn].getColor() +";"); // Couleur du joueur suivant.
+    bouton[0][select].setText("\n\nJoueur "+QString::number((playerturn+1))+"\n\n"); // Affichage joueur suivant sur le colonne selectionnée.
+}
 
-           bouton[0][select].setStyleSheet("background-color: red;");
-           bouton[0][select].setText("\n\nJoueur 1\n\n");
 
-       }
+void QMaster::putblock(){
 
-       else{
+    QString colorbg= "background-color:" + player[playerturn].getColor() +";"  ;
+    bool full=true;
 
-           bouton[0][select].setStyleSheet("background-color: blue;");
-           bouton[0][select].setText("\n\nJoueur 2\n\n");
+    for (int i=5; i>=0;i--){
 
-       }
+        if(gamestate[i][select]==0){ // Le joueur selectionne sa colonne et ensuite le bouton devient rouge.
+
+            bouton[i+1][select].setStyleSheet(colorbg);
+            gamestate[i][select]=(playerturn+1);
+            std::cout<< playerturn <<"        " <<nbjoueur<<std::endl;
+            if(end_Game( playerturn+1)){
+                QMessageBox msgBox;
+                msgBox.setText("Partie finie, le joueur "+player[playerturn].getColor()+ " a gagné... !");
+                msgBox.setInformativeText("Voulez-vous rejouer ?");
+                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::Yes);
+                int ret=msgBox.exec();
+
+                switch (ret) {
+
+                case QMessageBox::Yes:
+
+                    // Changement de layout pour recommencer la partie.... // Ici :
+                    restartgame(bouton,gamestate , layout ,select , playerturn);
+
+                    replay=true;
+                    break;
+                case  QMessageBox::No:
+                    QApplication::quit();
+                    break;
+                default:
+                    break;
+                }
+                // QApplication::quit(); // En cours... // Quitte le jeu quand on a un gagnant.
+            }
+            i=-1;
+            full=false;
+
+        }
+    }
+
+    if(!full){
+
+        playerturn=(playerturn+1)%nbjoueur;
+        bouton[0][select].setStyleSheet("background-color: grey;");
+        bouton[0][select].setText("\n\n        \n\n");
+
+        select=3;
+
+        bouton[0][select].setStyleSheet("background-color:" + player[playerturn].getColor() +";"); // Couleur du joueur suivant.
+        bouton[0][select].setText("\n\nJoueur "+QString::number((playerturn+1))+"\n\n"); // Affichage joueur suivant sur le colonne selectionnée.
+
+
+    }
+
 }
 
 QMaster::QMaster(){
 
     select=3;
-    player=true; // bool qui permet de definir le tour des joueurs, true pour le joueur 1 et false pour le joueur 2.
+    nbjoueur=2;
+    playerturn=1; // bool qui permet de definir le tour des joueurs, true pour le joueur 1 et false pour le joueur 2.
+    player=new Player[2];
+    player[0]= Player("blue",Typejoueur::Humain);
+    player[1]= Player("red",Typejoueur::Humain);
+    restartgame(bouton,gamestate , layout ,select , playerturn);
 
-    init(bouton,gamestate , layout ,select , player);
+
+    QObject::connect(&bouton[7][7-6], SIGNAL(clicked()),this, SLOT(moveleftslot())); // On connecte les boutons de direction aux slots que l'on instancie ici plus bas.
+    QObject::connect(&bouton[7][7-2], SIGNAL(clicked()),this, SLOT(moverightslot()));
+    QObject::connect(&bouton[7][7-4], SIGNAL(clicked()),this, SLOT(playerswitch()));
 
 
-       QObject::connect(&bouton[7][7-6], SIGNAL(clicked()),this, SLOT(moveleftslot())); // On connecte les boutons de direction aux slots que l'on instancie ici plus bas.
-       QObject::connect(&bouton[7][7-2], SIGNAL(clicked()),this, SLOT(moverightslot()));
-       QObject::connect(&bouton[7][7-4], SIGNAL(clicked()),this, SLOT(playerswitch()));
+}
+
+QMaster::QMaster(int nbIA){
+
+    select=3;
+    nbjoueur=2;
+    playerturn=1; // bool qui permet de definir le tour des joueurs, true pour le joueur 1 et false pour le joueur 2.
+    player=new Player[2];
+    switch (nbIA) {
+    case 0 :{
+        player[0]= Player("blue",Typejoueur::Humain);
+        player[1]= Player("red",Typejoueur::Humain);
+        break;
+    }
+    case 1:{
+        player[0]= Player("blue",Typejoueur::Humain);
+        player[1]= Player("red",Typejoueur::Machine);
+        break;
+    }
+    case 2 : {
+    player[0]= Player("blue",Typejoueur::Machine);
+    player[1]= Player("red",Typejoueur::Machine);
+    break;
+    }
+    default:
+        QApplication::quit();
+    }
+
+
+    restartgame(bouton,gamestate , layout ,select , playerturn);
+
+
+    QObject::connect(&bouton[7][7-6], SIGNAL(clicked()),this, SLOT(moveleftslot())); // On connecte les boutons de direction aux slots que l'on instancie ici plus bas.
+    QObject::connect(&bouton[7][7-2], SIGNAL(clicked()),this, SLOT(moverightslot()));
+    QObject::connect(&bouton[7][7-4], SIGNAL(clicked()),this, SLOT(playerswitch()));
 
 
 }
@@ -66,7 +155,7 @@ QMaster::QMaster(){
 
 QMaster::~QMaster() // Destructeur
 {
-
+    delete [] player;
 
 }
 
@@ -90,9 +179,9 @@ bool QMaster::verif_verti(int val){
             }
 
 
-    }
+        }
 
-}
+    }
     return end_vert;
 }
 
@@ -100,15 +189,15 @@ bool QMaster::verif_horiz(int val){
     bool end_hor=false;
     for(int lines=5;lines>=0;lines--){
         for(int columns=0; columns<7;columns++){
-           if(columns<4){
-               if(gamestate[lines][columns]==val && gamestate[lines][columns+1]==val && gamestate[lines][columns+2]==val && gamestate[lines][columns+3]==val){
-               end_hor=true;
-           }
+            if(columns<4){
+                if(gamestate[lines][columns]==val && gamestate[lines][columns+1]==val && gamestate[lines][columns+2]==val && gamestate[lines][columns+3]==val){
+                    end_hor=true;
+                }
+
+            }
+
 
         }
-
-
-    }
     }
 
 
@@ -141,12 +230,12 @@ bool QMaster::verif_diag_d(int val){
     bool end_diag_d=false;
 
     for(int lines=5;lines>=3;lines--){
-         for(int columns=0; columns<4;columns++){
-              if(gamestate[lines][columns]==val && gamestate[lines-1][columns+1]==val && gamestate[lines-2][columns+2]==val && gamestate[lines-3][columns+3]==val){
-                  end_diag_d=true;
-              }
+        for(int columns=0; columns<4;columns++){
+            if(gamestate[lines][columns]==val && gamestate[lines-1][columns+1]==val && gamestate[lines-2][columns+2]==val && gamestate[lines-3][columns+3]==val){
+                end_diag_d=true;
+            }
 
-         }
+        }
 
 
     }
@@ -160,31 +249,12 @@ bool QMaster::verif_diag_d(int val){
 
 
 
-bool QMaster::end_Game(bool joueur){
+bool QMaster::end_Game(int value){
     bool end=false;
-    int value;
 
-    if(joueur){
-
-        value=1;
-        if(verif_horiz(value) || verif_verti(value)|| verif_diag_d(value)|| verif_diag_g(value)){
+        if(verif_horiz(value) || verif_verti(value)|| verif_diag_d(value)|| verif_diag_g(value))
             end=true;
 
-
-    }
-
-    }
-
-    else {
-        value=2;
-        if(verif_horiz(value) || verif_verti(value)|| verif_diag_d(value)|| verif_diag_g(value)){
-            end=true;
-
-
-    }
-
-
-    }
 
     return end;
 }
@@ -192,23 +262,9 @@ bool QMaster::end_Game(bool joueur){
 
 void QMaster::moverightslot(){
 
-          int newselect=(select+1)%7; // +1 car on se decalle d'un bouton vers la droite.
+    int newselect=(select+1)%7; // +1 car on se decalle d'un bouton vers la droite.
 
-          bouton[0][select].setText("\n\n        \n\n");
-          bouton[0][select].setStyleSheet("background-color: grey;");// couleur par default du bouton qui indique les colonnes.
-
-         if(player){
-
-             bouton[0][newselect].setStyleSheet("background-color: red;");
-             bouton[0][newselect].setText("\n\nJoueur 1\n\n");// A chaque switch de de bouton vers la gauche, la colonne où le joueur se situr devient identifiable par le joueur avec l'inscriptinon 'joueur 1'.
-
-           }
-
-         else{
-
-             bouton[0][newselect].setStyleSheet("background-color: blue;");
-             bouton[0][newselect].setText("\n\nJoueur 2\n\n");// A chaque switch de de bouton vers la gauche, la colonne où le joueur se situr devient identifiable par le joueur avec l'inscriptinon 'joueur 2'.
-           }
+moveswitch(newselect);
 
     select=newselect;
 
@@ -225,21 +281,8 @@ void QMaster::moveleftslot(){
     }
 
 
-    bouton[0][select].setText("\n\n        \n\n");
-    bouton[0][select].setStyleSheet("background-color: grey;");
+moveswitch(newselect);
 
-    if(player){
-
-         bouton[0][newselect].setStyleSheet("background-color: red;");
-         bouton[0][newselect].setText("\n\nJoueur 1\n\n");
-
-        }
-
-    else{
-
-         bouton[0][newselect].setStyleSheet("background-color: blue;");
-         bouton[0][newselect].setText("\n\nJoueur 2\n\n");
-        }
 
     select=newselect;
 
@@ -247,137 +290,20 @@ void QMaster::moveleftslot(){
 
 void  QMaster::playerswitch(){
 
-    bool full=true;
-
-    if(player){ // Joueur 1
 
 
 
-       for (int i=5; i>=0;i--){
-
-            if(gamestate[i][select]==0){ // Le joueur selectionne sa colonne et ensuite le bouton devient rouge.
-
-                bouton[i+1][select].setStyleSheet("background-color: red;");
-                gamestate[i][select]=1;
-                if(end_Game(player)){
-                    QMessageBox msgBox;
-                    msgBox.setText("Partie finie, le joueur rouge a gagné... !");
-                    msgBox.setInformativeText("Voulez-vous rejouer ?");
-                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    msgBox.setDefaultButton(QMessageBox::Yes);
-                    int ret=msgBox.exec();
-
-                    switch (ret) {
-
-                    case QMessageBox::Yes:
-
-                        // Changement de layout pour recommencer la partie.... // Ici :
-                           init(bouton,gamestate , layout ,select , player);
-
-                        replay=true;
-                        break;
-                    case  QMessageBox::No:
-                        QApplication::quit();
-                        break;
-                    default:
-                        break;
-                }
-                           // QApplication::quit(); // En cours... // Quitte le jeu quand on a un gagnant.
-                }
-                i=-1;
-                full=false;
-
-            }
-        }
-
-       if(full){
-
-
-
-       }
-
-       else{ // Si le joueur 1 n'a pas gagné, on switch sur le joueur 2.
-
-           player=false;
-
-           bouton[0][select].setStyleSheet("background-color: grey;");
-           bouton[0][select].setText("\n\n        \n\n");
-
-           select=3;
-
-           bouton[0][select].setStyleSheet("background-color: blue;"); // Couleur du joueur 2.
-           bouton[0][select].setText("\n\nJoueur 2\n\n"); // Affichage joueur 2 sur le colonne selectionnée.
-       }
-
-
-
-
-    }
-
-    else{ // Joueur 2 cad quand le bool joueur est à false
-
-        for (int i=5; i>=0;i--){
-
-             if(gamestate[i][select]==0){
-
-                 bouton[i+1][select].setStyleSheet("background-color: blue;");
-                 gamestate[i][select]=2;
-                 if(end_Game(player)){
-                     QMessageBox msgBox;
-                     msgBox.setText("Partie finie, le joueur bleu a gagné... !");
-                     msgBox.setInformativeText("Voulez-vous rejouer ?");
-                     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                     msgBox.setDefaultButton(QMessageBox::Yes);
-                     int ret=msgBox.exec();
-
-                     switch (ret) {
-
-                     case QMessageBox::Yes:
-// Changement de layout pour recommencer la partie.... // Ici :
-                        init(bouton,gamestate , layout ,select , player);
-
-
-                         replay=true;
-                         break;
-                     case  QMessageBox::No:
-                         QApplication::quit();
-                         break;
-                     default:
-                         break;
-                 }
-                     //QApplication::quit();
-                 }
-
-                 i=-1;
-                 full=false;
-             }
-         }
-
-        if(full){
-
-        }
-
-        else{
-
-            player=true; // on repasse au joueur 1, avec son affichage.
-
-            bouton[0][select].setStyleSheet("background-color: grey;");
-            bouton[0][select].setText("\n\n        \n\n");
-
-            select=3;
-
-            bouton[0][select].setStyleSheet("background-color: red;");
-            bouton[0][select].setText("\n\nJoueur 1\n\n");
-        }
-
-
-
-    }
+    putblock();
 
 }
 
 
 
-
+void QMaster::moveswitch(int newselect){
+    bouton[0][select].setText("\n\n        \n\n");
+    bouton[0][select].setStyleSheet("background-color: grey;");
+    bouton[0][newselect].setStyleSheet("background-color:" + player[playerturn].getColor() +";");
+    bouton[0][newselect].setText("\n\nJoueur "+QString::number((playerturn+1))+"\n\n");
+}
 
 

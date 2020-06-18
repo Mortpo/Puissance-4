@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include <QPalette>
 #include <QObject>
+#include "player.h"
 
 class QMaster : public QWidget
 {
@@ -16,6 +17,7 @@ class QMaster : public QWidget
 public:
 
     QMaster( ); // Constructeur de notre plateau de jeu.
+    QMaster(int nbderobot); //constructeur avec les IA
     ~QMaster(); // Destructeur.
 
     int select; // represente la colonne que l'on selectionne.
@@ -26,7 +28,11 @@ public:
     QPushButton bouton[8][7]; // tableau de boutons.
     int gamestate[6][7]; // tableau d'entier qui va être relier au tableau de boutons.
 
-    bool player; // Si true, alors Joueur 1 doit jouer, si false, Joueur 2 doit jouer.
+    int playerturn; //tour du joueur
+    Player *player;
+    int nbjoueur;
+
+
     QGridLayout layout ; // Permet  de positionner nos Widgets.
     bool replay=false;
 
@@ -34,9 +40,11 @@ public:
     bool verif_verti(int val);
     bool verif_diag_d(int val);
     bool verif_diag_g(int val);
-    bool end_Game(bool joueur);
+    bool end_Game(int player);
     bool getreplay();
-
+    void restartgame(QPushButton bouton[8][7], int gamestate[6][7] , QGridLayout &layout , int &select , int player);
+    void putblock();
+    void moveswitch(int newselect);
 
 
 

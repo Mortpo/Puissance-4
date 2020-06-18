@@ -18,10 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    player.cpp \
     qmaster.cpp
 
 HEADERS += \
     mainwindow.h \
+    player.h \
     qmaster.h
 
 
