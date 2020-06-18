@@ -36,9 +36,11 @@ void QMaster::restartgame(QPushButton bouton[8][7], int gamestate[6][7] , QGridL
     bouton[0][select].setStyleSheet("background-color:" + player[playerturn].getColor() +";"); // Couleur du joueur suivant.
     bouton[0][select].setText("\n\nJoueur "+QString::number((playerturn+1))+"\n\n"); // Affichage joueur suivant sur le colonne selectionnée.
 }
-
-
 void QMaster::putblock(){
+putblock(select);
+}
+
+void QMaster::putblock(int select){
 
     QString colorbg= "background-color:" + player[playerturn].getColor() +";"  ;
     bool full=true;
