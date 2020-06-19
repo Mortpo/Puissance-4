@@ -15,6 +15,8 @@ class Player
 private:
     QString color;
     Typejoueur type;
+    int cerveau;
+
 
 
 public:
@@ -23,8 +25,9 @@ public:
     Player(const QString &color,Typejoueur type);
     Typejoueur getType();
     QString getColor();
+    int getCerveau();
 
-
+    void setCerveau(int qi);
     void setType(Typejoueur type);
     void setColor(QString color);
 

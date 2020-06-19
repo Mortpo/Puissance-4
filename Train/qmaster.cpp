@@ -40,10 +40,11 @@ void QMaster::putblock(){
 putblock(select);
 }
 
-void QMaster::putblock(int select){
+void QMaster::putblock(int &select){
 
     QString colorbg= "background-color:" + player[playerturn].getColor() +";"  ;
     bool full=true;
+
 
     for (int i=5; i>=0;i--){
 
@@ -51,7 +52,7 @@ void QMaster::putblock(int select){
 
             bouton[i+1][select].setStyleSheet(colorbg);
             gamestate[i][select]=(playerturn+1);
-            std::cout<< playerturn <<"        " <<nbjoueur<<std::endl;
+
             if(end_Game( playerturn+1)){
                 QMessageBox msgBox;
                 msgBox.setText("Partie finie, le joueur "+player[playerturn].getColor()+ " a gagné... !");
@@ -93,6 +94,8 @@ void QMaster::putblock(int select){
 
         bouton[0][select].setStyleSheet("background-color:" + player[playerturn].getColor() +";"); // Couleur du joueur suivant.
         bouton[0][select].setText("\n\nJoueur "+QString::number((playerturn+1))+"\n\n"); // Affichage joueur suivant sur le colonne selectionnée.
+
+
 
 
     }
@@ -145,6 +148,10 @@ QMaster::QMaster(int nbIA){
 
 
     restartgame(bouton,gamestate , layout ,select , playerturn);
+
+    if(player[playerturn].getType()==Typejoueur::Machine){
+        iaturn(player[playerturn].getCerveau());
+    }
 
 
     QObject::connect(&bouton[7][7-6], SIGNAL(clicked()),this, SLOT(moveleftslot())); // On connecte les boutons de direction aux slots que l'on instancie ici plus bas.
@@ -293,9 +300,11 @@ moveswitch(newselect);
 void  QMaster::playerswitch(){
 
 
-
-
     putblock();
+
+    if(player[playerturn].getType()==Typejoueur::Machine){
+        iaturn( player[playerturn].getCerveau());
+    }
 
 }
 
@@ -309,3 +318,40 @@ void QMaster::moveswitch(int newselect){
 }
 
 
+int QMaster::nombredia(){
+    QPushButton *IA0 = new QPushButton("0");
+    QPushButton *IA1 = new QPushButton("1");
+    QPushButton *IA2 = new QPushButton("2");
+
+    QMessageBox msgBox;
+    msgBox.setText("Choisissez le nombre d'IA");
+    msgBox.setInformativeText("Jouer contre qui ?");
+
+    msgBox.addButton(IA1 , QMessageBox::RejectRole);
+    msgBox.addButton(IA2 , QMessageBox::DestructiveRole);
+    msgBox.addButton(IA0 , QMessageBox::AcceptRole);
+
+
+
+    int ret=msgBox.exec();
+
+    if(ret != 1 &&ret !=  2&&ret != 3)
+        QApplication::quit();
+
+    return (ret);
+}
+
+
+void QMaster::iaturn(int qi){
+    switch (qi) {
+    case 0:{
+    putblock();
+    }
+     default:{
+
+        QApplication::quit();
+
+    }
+
+    }
+}

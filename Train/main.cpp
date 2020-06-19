@@ -17,9 +17,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
 
-
-    QMaster master;
-
+ QMaster master(QMaster::nombredia());
 
 
 
