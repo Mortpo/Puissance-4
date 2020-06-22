@@ -307,7 +307,7 @@ moveswitch(newselect);
 
 void  QMaster::playerswitch(){
 
-
+    if(player[playerturn].getType()==Typejoueur::Humain)
     putblock();
 
     if(player[playerturn].getType()==Typejoueur::Machine){
@@ -332,7 +332,7 @@ int QMaster::nombredia(){
     QPushButton *IA2 = new QPushButton("1");
 
     QMessageBox msgBox;
-    msgBox.setText("Choisissez le nombre d'humains ?");
+    msgBox.setText("Choisissez le nombre d'IA ?");
     msgBox.setInformativeText("Jouer contre qui ?");
 
     msgBox.addButton(IA1 , QMessageBox::RejectRole);
@@ -342,7 +342,6 @@ int QMaster::nombredia(){
 
 
     int ret=msgBox.exec();
-std::cout << ret << std::endl;
     if(ret != 1 && ret !=  2 && ret != 3)
         QApplication::quit();
 
