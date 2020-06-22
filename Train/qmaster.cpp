@@ -36,11 +36,22 @@ void QMaster::restartgame(QPushButton bouton[8][7], int gamestate[6][7] , QGridL
     bouton[0][select].setStyleSheet("background-color:" + player[playerturn].getColor() +";"); // Couleur du joueur suivant.
     bouton[0][select].setText("\n\nJoueur "+QString::number((playerturn+1))+"\n\n"); // Affichage joueur suivant sur le colonne selectionnée.
 }
+
+
+int QMaster::Rand( int a, int b)
+{
+       int nRand ;
+       nRand= a + (int)((float)rand() * (b-a+1) / (RAND_MAX-1)) ;
+       return nRand;
+}
+
+
+
 void QMaster::putblock(){
 putblock(select);
 }
 
-void QMaster::putblock(int &select){
+void QMaster::putblock(int select){
 
     QString colorbg= "background-color:" + player[playerturn].getColor() +";"  ;
     bool full=true;
@@ -246,10 +257,7 @@ bool QMaster::verif_diag_d(int val){
 
         }
 
-
     }
-
-
 
     return end_diag_d;
 }
@@ -324,7 +332,7 @@ int QMaster::nombredia(){
     QPushButton *IA2 = new QPushButton("2");
 
     QMessageBox msgBox;
-    msgBox.setText("Choisissez le nombre d'IA");
+    msgBox.setText("Choisissez le nombre d''IA'humains ?");
     msgBox.setInformativeText("Jouer contre qui ?");
 
     msgBox.addButton(IA1 , QMessageBox::RejectRole);
@@ -335,7 +343,7 @@ int QMaster::nombredia(){
 
     int ret=msgBox.exec();
 
-    if(ret != 1 &&ret !=  2&&ret != 3)
+    if(ret != 1 && ret !=  2 && ret != 3)
         QApplication::quit();
 
     return (ret);
@@ -343,10 +351,28 @@ int QMaster::nombredia(){
 
 
 void QMaster::iaturn(int qi){
+
     switch (qi) {
+
     case 0:{
+
+
+        int a=Rand(0,6);
+        std::cout << a << std::endl;
     putblock();
+
+    break;
     }
+  /*  case 1:{
+        int value_1 = rand();
+    putblock(value_1);
+    }
+    case 2:{
+        int value_2 = rand();
+    putblock(value_2);
+    }    */
+
+
      default:{
 
         QApplication::quit();
