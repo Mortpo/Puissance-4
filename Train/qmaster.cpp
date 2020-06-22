@@ -51,7 +51,7 @@ void QMaster::putblock(){
 putblock(select);
 }
 
-void QMaster::putblock(int select){
+void QMaster::putblock(int &select){
 
     QString colorbg= "background-color:" + player[playerturn].getColor() +";"  ;
     bool full=true;
@@ -327,12 +327,12 @@ void QMaster::moveswitch(int newselect){
 
 
 int QMaster::nombredia(){
-    QPushButton *IA0 = new QPushButton("0");
-    QPushButton *IA1 = new QPushButton("1");
-    QPushButton *IA2 = new QPushButton("2");
+    QPushButton *IA0 = new QPushButton("2");
+    QPushButton *IA1 = new QPushButton("0");
+    QPushButton *IA2 = new QPushButton("1");
 
     QMessageBox msgBox;
-    msgBox.setText("Choisissez le nombre d''IA'humains ?");
+    msgBox.setText("Choisissez le nombre d'humains ?");
     msgBox.setInformativeText("Jouer contre qui ?");
 
     msgBox.addButton(IA1 , QMessageBox::RejectRole);
@@ -342,7 +342,7 @@ int QMaster::nombredia(){
 
 
     int ret=msgBox.exec();
-
+std::cout << ret << std::endl;
     if(ret != 1 && ret !=  2 && ret != 3)
         QApplication::quit();
 
@@ -358,19 +358,11 @@ void QMaster::iaturn(int qi){
 
 
         int a=Rand(0,6);
-        std::cout << a << std::endl;
-    putblock();
+
+    putblock(a);
 
     break;
     }
-  /*  case 1:{
-        int value_1 = rand();
-    putblock(value_1);
-    }
-    case 2:{
-        int value_2 = rand();
-    putblock(value_2);
-    }    */
 
 
      default:{

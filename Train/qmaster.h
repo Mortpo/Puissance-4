@@ -44,7 +44,7 @@ public:
     bool end_Game(int player);
     bool getreplay();
     void restartgame(QPushButton bouton[8][7], int gamestate[6][7] , QGridLayout &layout , int &select , int player);
-    void putblock(int select);
+    void putblock(int &select);
     void putblock();
     void moveswitch(int newselect);
     static int nombredia();
