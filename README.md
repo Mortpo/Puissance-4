@@ -14,4 +14,4 @@ Les créateurs sont EL HAFIANE Anass (https://github.com/asdesas52) et ANQUETIN 
 
 
 # Exemple
-![Alt text](/P4image.jpg?raw=true "Exemple de partie")
+(/P4image.jpg?raw=true "Exemple de partie")
