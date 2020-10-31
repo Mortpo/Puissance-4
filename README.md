@@ -11,3 +11,7 @@ Le fichier projet de QT se nomme "Pquatre"
 Pour lancer et compiler le programme Qt est nécessaire.
 
 Les créateurs sont EL HAFIANE Anass (https://github.com/asdesas52) et ANQUETIN Romain.
+
+
+# Exemple
+![Alt text](/P4image.jpg?raw=true "Exemple de partie")
